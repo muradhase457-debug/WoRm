@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>World Builder</title>
+<meta name="description" content="Interactive stylised 3D worlds — explore a tropical island and an ice cove in real time, with 4K rendering.">
+<meta name="theme-color" content="#1a95b8">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/" } }
+</script>
+<style>
+  :root { --glass: rgba(10, 36, 48, .46); --line: rgba(255,255,255,.22); --txt: #fff; --acc: #ffc24a; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; overflow: hidden; background: #1a95b8; color: var(--txt);
+    font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+  .glass { background: var(--glass); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid var(--line); border-radius: 16px; }
+  .brand { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 16px; padding: 12px 16px; pointer-events: none; text-shadow: 0 1px 8px rgba(0,0,0,.25); }
+  .brand h1 { font-size: 20px; letter-spacing: -.01em; }
+  .brand p { font-size: 12.5px; opacity: .85; }
+  .tabs { position: fixed; top: max(16px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); display: flex; gap: 4px; padding: 5px; }
+  button { font: inherit; color: inherit; background: transparent; border: 0; cursor: pointer; border-radius: 12px; padding: 9px 14px; transition: background .15s; white-space: nowrap; }
+  button:hover { background: rgba(255,255,255,.14); }
+  button.on { background: rgba(255,255,255,.92); color: #0b3342; font-weight: 600; }
+  button:disabled { opacity: .6; cursor: progress; }
+  .dock { position: fixed; right: 16px; bottom: max(16px, env(safe-area-inset-bottom)); display: flex; flex-wrap: wrap; gap: 8px; padding: 6px; align-items: center; justify-content: flex-end; max-width: calc(100vw - 32px); }
+  #quality { display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: rgba(0,0,0,.18); }
+  #quality button { padding: 7px 11px; font-size: 13.5px; }
+  .primary { background: var(--acc); color: #3a2500; font-weight: 700; }
+  .primary:hover { background: #ffd070; }
+  .hint { position: fixed; left: 16px; bottom: max(16px, env(safe-area-inset-bottom)); padding: 9px 14px; font-size: 13px; opacity: .92; pointer-events: none; }
+  #res { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); font-size: 12px; opacity: .75; pointer-events: none; font-variant-numeric: tabular-nums; text-shadow: 0 1px 6px rgba(0,0,0,.4); }
+  #loader { position: fixed; inset: 0; display: grid; place-items: center; background: #1a95b8; opacity: 0; pointer-events: none; transition: opacity .28s; }
+  #loader.show { opacity: 1; pointer-events: all; }
+  #loader span { font-weight: 600; letter-spacing: .04em; animation: pulse 1.1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .45; } }
+  @media (max-width: 760px) {
+    .brand { display: none; }
+    .tabs { width: calc(100vw - 32px); }
+    .tabs button { flex: 1; padding: 9px 8px; font-size: 14px; }
+    .hint, #res { display: none; }
+    .dock { left: 16px; right: 16px; justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+<canvas id="c" tabindex="0" aria-label="Interactive 3D world. Drag to orbit, scroll or pinch to zoom."></canvas>
+
+<header class="brand glass"><h1>World Builder</h1><p>Interactive 3D worlds</p></header>
+
+<nav class="tabs glass" aria-label="Choose a world">
+  <button data-w="tropical" class="on">Tropical Island</button>
+  <button data-w="ice">Ice Cove</button>
+</nav>
+
+<div class="hint glass">Drag to orbit &nbsp;·&nbsp; Scroll / pinch to zoom &nbsp;·&nbsp; Right-drag to pan</div>
+<div id="res"></div>
+
+<div class="dock glass">
+  <div id="quality" role="group" aria-label="Render quality">
+    <button data-q="standard">Standard</button><button data-q="high">High</button><button data-q="ultra">Ultra 4K</button>
+  </div>
+  <button id="rotate">Auto-rotate</button>
+  <button id="reset">Reset view</button>
+  <button id="full">Fullscreen</button>
+  <button id="shot" class="primary">Save 4K PNG</button>
+</div>
+
+<div id="loader"><span>BUILDING WORLD…</span></div>
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
